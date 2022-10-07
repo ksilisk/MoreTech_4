@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 import requests
 import json
 import feedparser
-
+import time
 
 class Parser:
 
@@ -30,6 +30,7 @@ class Parser:
                 for j in range(len(text_data) - 1):
                     text += text_data[j].text + '\n'
                 result.append({'title': title, 'date': date, 'text': text})
+                time.sleep(3)
         return result
 
 
