@@ -1,4 +1,5 @@
 from parser import Parser
+
 def main():
     a = Parser()
 
