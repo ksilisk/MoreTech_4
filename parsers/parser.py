@@ -1,5 +1,7 @@
 '''
 Тут класс, в котором реализованы функции парсинга новостных сайтов
+
+Файл требовался для сбора входных данных
 '''
 from telethon import TelegramClient, sync
 from bs4 import BeautifulSoup
