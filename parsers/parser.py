@@ -61,13 +61,52 @@ class Parser:
         return result
 
     #  парсинг телеграмм каналов
-    def parse_telegram_channel(self, count: int) -> list:
-        client = TelegramClient('Parser', self.api_data['api_id'], self.api_data['api_hash'])
+    def parse_tg(self, name: str) -> list:
+        result = []
+        for filename in self.sites[name]:
+            with open('tg_channel/' + filename, 'r') as f:
+                page = f.read()
+            f.close()
+            soup = BeautifulSoup(page, 'html.parser')
+            data = soup.find_all('div', 'message default clearfix')
+            for news in data:
+                if len(news.find('div', 'text').find_all('a')) == 1 and news.find('div', 'text').find('strong'):
+                    if len((news.find('div', 'text').find('a')['href']).split('/')) == 5 \
+                            and (news.find('div', 'text').find('a')['href']).split('/')[2] == 'telegra.ph':
+                        title = news.find('div', 'text').find('strong').text.replace("\xa0", " ").replace("\u200b", "")
+                        date = news.find('div', 'pull_right date details')['title']
+                        date = date[:19]
+                        text = news.find('div', 'text').text.replace("\xa0", " ").replace("\u200b", "")
+                        result.append({'title': title, 'date': date, 'text': text})
+        return result
+
+    def kba(self) -> list:
+        stop_word = ['REAL CAPITAL', 'ПОДПИШИСЬ', 'ГАРАНТИРУЕМ', 'подпишись', 'гарантируем', 'RAL CAPITAL']
+        result = []
+        for filename in self.sites['kba']:
+            with open('tg_channel/' + filename, 'r') as f:
+                page = f.read()
+            f.close()
+            soup = BeautifulSoup(page, 'html.parser')
+            data = soup.find_all('div', 'message default clearfix')
+            for news in data:
+                if news.find('div', 'text') and news.find('div', 'text').find('a') is None:
+                    text = news.find('div', 'text').text.replace('\u200d', "")
+                    flag = True
+                    for word in stop_word:
+                        if word in text:
+                            flag = False
+                    if flag:
+                        title = text.split('📌')[0]
+                        date = news.find('div', 'pull_right date details')['title']
+                        result.append({'title': title, 'date': date, 'text': text})
+        return result
+
 
 
 def main():
     parser = Parser()
-    a = parser.klerk_ru(0, 10)
+    a = parser.kba()
     for i in a:
         print(i)
 
