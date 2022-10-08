@@ -146,13 +146,10 @@ def main() -> None:
 
     clusterer = EstimateKMeans(data=vect_data, n_clusters=5)
     clusterer.fit()
-    print(clusterer.clusters)
-    
+    clusters = clusterer.clusters    
 
 if __name__ == "__main__":
-    data_path = "./data/acc_news.csv"
+    data_path = "./data/result_gendir.json"
     tokenizer = AutoTokenizer.from_pretrained("cointegrated/rubert-tiny")
     model = AutoModel.from_pretrained("cointegrated/rubert-tiny")
     main()
-
-
