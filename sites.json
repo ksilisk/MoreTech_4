@@ -1,4 +1,8 @@
 {
   "buh_ru": "https://buh.ru/rss/?chanel=news",
-  "klerk_ru": "https://www.klerk.ru/export/news.rss"
+  "klerk_ru": "https://www.klerk.ru/export/news.rss",
+  "bfm": ["bfm.html", "bfm2.html"],
+  "kba": ["kba.html"],
+  "poc": ["poc.html"],
+  "crb": ["crb.html"]
 }

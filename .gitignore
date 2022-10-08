@@ -3,3 +3,5 @@ venv/
 .idea
 result.json
 api.json
+tg_channel/
+result2.json
