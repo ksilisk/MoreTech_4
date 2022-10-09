@@ -441,11 +441,11 @@ class TrendSummarizer:
     # top_n_words[0][:20]
 
 
-def top_k_news(acc_embed, df, date, trend_mark, n_news=3):
+def top_k_news(embed_keywords, df, date, trend_mark, n_news=3):
     top_news = {"data": []}
     news_pool = pd.DataFrame()
     trend_clusters = trend_mark[trend_mark["trending"] == 1]["cluster"].index
-    df["cos_dist_acc"] = df["rubert_tiny"].apply(lambda embed: -1 * (spatial.distance.cosine(embed, acc_embed) - 1))
+    df["cos_dist_acc"] = df["rubert_tiny"].apply(lambda embed: -1 * (spatial.distance.cosine(embed.reshape(-1), embed_keywords) - 1))
     for trend_cluster in trend_clusters:
         news_pool = pd.concat([news_pool, df[df["cluster"] == trend_cluster]])
 
@@ -457,6 +457,7 @@ def top_k_news(acc_embed, df, date, trend_mark, n_news=3):
         top_news["data"].append(news)
 
     return top_news
+
 
 
 def get_trends(date: str) -> pd.DataFrame:

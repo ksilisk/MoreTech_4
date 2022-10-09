@@ -14,8 +14,8 @@ h = Helper()
 logging.info('App created!')
 
 
-@app.route('/get_news/<int:user_id>', methods=['GET'])
-def get_news(user_id):
+@app.route('/get_news/<int:user_id>/<string:date>', methods=['GET'])
+def get_news(user_id, date):
     '''
     Функция, выдающая новость пользователю
     Принимает на вход:
@@ -25,9 +25,9 @@ def get_news(user_id):
     "text": str - текст новости
     '''
     logging.info('/get_news handled')
-    if v.valid_id(user_id):
-        detector = TrendDetector()
-    return jsonify(INVALID_ID), 404
+    if v.valid_id(user_id) and v.valid_date(date):
+        return jsonify(h.news_to_json(user_id, date)), 200
+    return jsonify(INVALID_DATA), 400
 
 
 @app.route('/add_user', methods=['POST'])
@@ -48,8 +48,8 @@ def add_user():
     return jsonify(INVALID_DATA), 400
 
 
-@app.route('/get_trends/<int:user_id>', methods=['GET'])
-def get_trends(user_id):
+@app.route('/get_trends/<int:user_id>/<string:date>', methods=['GET'])
+def get_trends(user_id, date):
     '''
     Функция, выдающая список трендов
     Принимает на вход:
@@ -58,10 +58,9 @@ def get_trends(user_id):
     "trends": list - список трендов
     '''
     logging.info('/get_trends handled')
-    if v.valid_id(user_id):
-        date = '2022-10-04'
+    if v.valid_id(user_id) and v.valid_date(date):
         return jsonify(h.trends_to_json(user_id, trends(date))), 200
-    return jsonify(INVALID_ID), 404
+    return jsonify(INVALID_DATA), 400
 
 
 if __name__ == '__main__':

@@ -1,7 +1,7 @@
 """
 Тут происходит вся валидацияа
 """
-
+import datetime
 import logging
 import backend.db.sqllib as sql
 
@@ -30,3 +30,10 @@ class Validate:
 
     def valid_id(self, id: int) -> bool:
         return sql.check_id(id)
+
+    def valid_date(self, date: str):
+        try:
+            datetime.datetime.strptime(date, '%Y-%m-%d')
+            return True
+        except:
+            return False
