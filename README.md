@@ -1,9 +1,15 @@
-# MoreTech_4
-Работа над хакатоном MORE.Tech 4.0 от ВТБ
+# Работа над хакатоном MORE.Tech 4.0 от ВТБ
 
-## Парсинг
+* [ML](#ml)
+* [Back-end](#backend)
+  * [1. POST /add_user](#add_user)
+  * [2. GET /get_news/$id](#get_news)
+  * [3. GET /get_trends/$id](#get_trends)
+* [Парсинг](#pars)
+* [Инструкции](#instruction)
+  * [Запуск веб-приложения](#start_app)
 
-## МL
+## <a name="ml"></a> ML
 
 В качестве ролей в решении хакатона были приняты бухгалтер и генеральный директор.
 
@@ -43,4 +49,10 @@ tSNE - Гендиры:
 \
 
 
-## Back-end
+## <a name="backend"></a> Back-end
+### <a name="add_user"></a> 1. POST /add_user
+### <a name="get_news"></a> 2. GET /get_news/$id
+### <a name="get_trends"></a> 3. GET /get_trends/$id
+## <a name="pars"></a> Парсинг
+## <a name="instruction"></a> Инструкции
+### <a name="start_app"></a> Запуск веб-приложения
