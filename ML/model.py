@@ -24,7 +24,7 @@ import warnings
 warnings.filterwarnings("ignore")
 STOPWORDS = nltk.corpus.stopwords.words("russian")
 
-data_path = "../ML/data/result_acc.json"
+data_path = "ML/data/result_acc.json"
 tokenizer = AutoTokenizer.from_pretrained("cointegrated/rubert-tiny")
 model = AutoModel.from_pretrained("cointegrated/rubert-tiny")
 

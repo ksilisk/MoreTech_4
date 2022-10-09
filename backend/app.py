@@ -5,6 +5,7 @@ from backend.validate import Validate
 from ML.model import get_trends as trends
 import logging
 
+
 logging.basicConfig(filename='app.log', level=logging.INFO)
 app = Flask('NewsAPI')
 app.config['JSON_AS_ASCII'] = False  # работа с символами кириллицы
