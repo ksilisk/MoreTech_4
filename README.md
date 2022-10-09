@@ -56,3 +56,14 @@ tSNE - Гендиры:
 ## <a name="pars"></a> Парсинг
 ## <a name="instruction"></a> Инструкции
 ### <a name="start_app"></a> Запуск веб-приложения
+#### Настраиваем виртуальное окружение
+##### Устанавливаем `python3-venv`
+      sudo apt install python3-venv
+##### Создаем виртуальное окружение
+      python3 -m venv venv
+##### Переходим в созданное окружение
+      source venv/bin/activate
+##### Устанавливаем необходимые пакеты
+      pip install -r requirements.txt
+##### Запускаем веб-приложение
+      python3 main.py
