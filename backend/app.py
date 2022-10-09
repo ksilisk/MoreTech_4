@@ -2,7 +2,7 @@ from errors import INVALID_ID, INVALID_DATA
 from flask import Flask, jsonify, request
 from helpers import Helper
 from validate import Validate
-import model
+from ML.model import TrendDetector
 import logging
 
 logging.basicConfig(filename='app.log', level=logging.INFO)
@@ -24,7 +24,7 @@ def get_news(user_id):
     '''
     logging.info('/get_news handled')
     if v.valid_id(user_id):
-        return '', 200
+        detector = TrendDetector()
     return jsonify(INVALID_ID), 404
 
 

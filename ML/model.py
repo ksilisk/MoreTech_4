@@ -9,18 +9,20 @@ import datetime
 import torch
 from transformers import AutoTokenizer, AutoModel
 from sklearn.cluster import KMeans
+from sklearn.feature_extraction.text import CountVectorizer
 
 import nltk
+
 nltk.download("punkt")
 nltk.download("stopwords")
 
 import warnings
+
 warnings.filterwarnings("ignore")
 STOPWORDS = nltk.corpus.stopwords.words("russian")
 
 
 class DataReader:
-
     """
 
     @decs
@@ -34,8 +36,8 @@ class DataReader:
     """
 
     def __init__(
-        self,
-        data_path: str = ""
+            self,
+            data_path: str = ""
     ) -> None:
 
         """
@@ -87,7 +89,6 @@ class DataReader:
 
 
 class TextVectorizer:
-
     """
     
     @desc
@@ -103,11 +104,10 @@ class TextVectorizer:
     """
 
     def __init__(
-        self,
-        data: pd.DataFrame = pd.DataFrame,
-        stopwords: set = None
+            self,
+            data: pd.DataFrame = pd.DataFrame,
+            stopwords: set = None
     ) -> None:
-
         """
         @desc TextVectorizer contructor
 
@@ -119,13 +119,12 @@ class TextVectorizer:
 
         self.data = data
         self.stopwords = stopwords
-    
-    def preprocess_data(
-        self,
-        source_sentence: str,
-        remove_stopwords: bool
-    ) -> str:
 
+    def preprocess_data(
+            self,
+            source_sentence: str,
+            remove_stopwords: bool
+    ) -> str:
         """
         @desc Deletes dots, commas and etc.
 
@@ -147,11 +146,10 @@ class TextVectorizer:
         return source_sentence
 
     def embed_bert_cls(
-        self, 
-        text: str, model: AutoModel,
-        tokenizer: AutoTokenizer
+            self,
+            text: str, model: AutoModel,
+            tokenizer: AutoTokenizer
     ) -> torch.nn.functional:
-
         """
         @desc Generates embedding from text data
 
@@ -170,7 +168,6 @@ class TextVectorizer:
         return embeddings[0].cpu().numpy()
 
     def fit(self) -> None:
-
         """
         @desc Fits tokenizer
 
@@ -191,7 +188,6 @@ class TextVectorizer:
 
 
 class EstimateKMeans:
-
     """
     
     @desc Class for KMeans clustering estimation
@@ -202,11 +198,10 @@ class EstimateKMeans:
     """
 
     def __init__(
-        self,
-        data: pd.DataFrame = pd.DataFrame,
-        n_clusters: int = 3
+            self,
+            data: pd.DataFrame = pd.DataFrame,
+            n_clusters: int = 3
     ) -> None:
-
         """
         @desc Initialize KMeans clusterer
 
@@ -221,7 +216,6 @@ class EstimateKMeans:
         self.clusters = None
 
     def fit(self) -> None:
-
         """
         @desc Fitting KMeans clusterer
 
@@ -240,7 +234,6 @@ class EstimateKMeans:
 
 
 class TrendDetector:
-
     """
     
     @desc Class for performing trend detection
@@ -253,9 +246,9 @@ class TrendDetector:
     """
 
     def __init__(
-        self,
-        data,
-        clusters: list = []
+            self,
+            data,
+            clusters: list = []
     ) -> None:
 
         """
@@ -312,8 +305,8 @@ class TrendDetector:
         return time_series[0]
 
     def trend_detection_by_date(
-        self,
-        week_date: str
+            self,
+            week_date: str
     ) -> pd.DataFrame:
 
         """
@@ -327,7 +320,7 @@ class TrendDetector:
         self.data_time_converter()
         week_date = datetime.datetime.strptime(week_date, "%Y-%m-%d").date()
 
-        week_ago = week_date - datetime.timedelta(days = 7)
+        week_ago = week_date - datetime.timedelta(days=7)
         week_date, week_ago = pd.Timestamp(week_date), pd.Timestamp(week_ago)
         last_week = self.data[(self.data["date"] <= week_date) & (self.data["date"] >= week_ago)]
 
@@ -353,14 +346,14 @@ class TrendDetector:
                 rolling_std = time_series.rolling(i).std()
                 mean = (time_series[-1] - rolling_mean[-1]) / (rolling_std[-1] + 1e-9)
                 i -= 1
-            
+
             i = 7
             while pd.isna(std) and i >= 1:
                 rolling_std_mean = rolling_std.rolling(i).mean()
                 rolling_std_std = rolling_std.rolling(i).std()
                 std = (rolling_std[-1] - rolling_std_mean[-1]) / (rolling_std_std[-1] + 1e-9)
                 i -= 1
-            
+
             if pd.isna(std):
                 std = mean - 1
 
@@ -371,7 +364,74 @@ class TrendDetector:
             clusters_trend.trending[clusters_trend.cluster == max_cluster] = 1
 
         return clusters_trend
-    
+
+
+class TrendSummarizer:
+    """
+        @desc Labeling trends
+    """
+
+    def __init__(self, data, clusters: list = []) -> None:
+        """
+        @desc Initialize trend summarizer instance
+        @param data: Embeded data
+        @param clusters: List of distinguished clusters
+        @return None
+        """
+
+        self.data_per_cluster = data.groupby(['cluster'], as_index=False).agg({'train': ' '.join})
+
+        # Manually defining trends names
+        self.acc_clusters_dict = {
+            0: 'Налоговое законодательство',
+            1: 'Налоги и отчетность',
+            2: 'Финансы',
+            3: 'Торговля',
+            4: 'Трудовое законодательство',
+            5: 'Документооборот',
+            6: 'Бизнес России и Мира',
+            7: 'Программное обеспечение для бухгалтеров',
+            8: 'Макроэкономика',
+            9: 'OTHER'
+        }
+
+        self.ceo_clusters_dict = {
+            0: 'Финансы',
+            1: 'Digital',
+            2: 'Высокие технологии',
+            3: 'Макроэкономика',
+            4: 'Советы бизнесменам'
+        }
+
+    def c_tf_idf(self, documents, m, ngram_range=(1, 1)):
+        count = CountVectorizer(ngram_range=ngram_range).fit(documents)
+        t = count.transform(documents).toarray()
+        w = t.sum(axis=1)
+        tf = np.divide(t.T, w)
+        sum_t = t.sum(axis=0)
+        idf = np.log(np.divide(m, sum_t)).reshape(-1, 1)
+        tf_idf = np.multiply(tf, idf)
+
+        return tf_idf, count
+
+    def extract_top_n_words_per_topic(self, tf_idf, count, data_per_cluster, n=20):
+        words = count.get_feature_names()
+        labels = list(data_per_cluster.cluster)
+        tf_idf_transposed = tf_idf.T
+        indices = tf_idf_transposed.argsort()[:, -n:]
+        top_n_words = {label: [(words[j], tf_idf_transposed[i][j]) for j in indices[i]][::-1] for i, label in
+                       enumerate(labels)}
+        return top_n_words
+
+    def show_top_n_words(self, top_n_words, cluster, n=10):
+        # Shows top (n) words of a trend, sorted by importance
+
+        return top_n_words[cluster][:n]
+
+    # INTO MAIN, I GUESS?
+    # tf_idf, count = c_tf_idf(self.data_per_cluster.train.values, m=len(df))
+    # top_n_words = extract_top_n_words_per_topic(tf_idf, count, self.data_per_cluster, n=20)
+    # top_n_words[0][:20]
 
 
 def main() -> None:
@@ -387,8 +447,9 @@ def main() -> None:
     clusters = clusterer.clusters
 
     trend_detector = TrendDetector(data=vect_data, clusters=clusters)
-    trends = trend_detector.trend_detection_by_date("2022-10-04")   
+    trends = trend_detector.trend_detection_by_date("2022-10-04")
     print(trends)
+
 
 if __name__ == "__main__":
     data_path = "./data/result_acc.json"
