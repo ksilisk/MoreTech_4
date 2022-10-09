@@ -107,4 +107,4 @@ tSNE - Гендиры:
 ##### Устанавливаем необходимые пакеты
       pip install -r requirements.txt
 ##### Запускаем веб-приложение
-      python3 main.py
+      gunicorn --workers=4 --bind=127.0.0.1:5000 main:app
