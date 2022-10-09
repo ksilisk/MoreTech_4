@@ -22,6 +22,12 @@ def check_name(name: str) -> bool:
     return True if not res else False
 
 
-def check_id(id: int) -> bool:
-    res = cur.execute("SELECT name FROM users WHERE id = ?", (id,)).fetchone()
+def check_id(user_id: int) -> bool:
+    res = cur.execute("SELECT name FROM users WHERE id = ?", (user_id,)).fetchone()
     return True if res else False
+
+
+def add_news(user_id: int, title: str) -> None:
+    cur.execute("INSERT INTO news (user_id, title) VALUES (?, ?)", (user_id, title))
+    con.commit()
+

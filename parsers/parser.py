@@ -3,7 +3,6 @@
 
 Файл требовался для сбора входных данных
 '''
-from telethon import TelegramClient, sync
 from bs4 import BeautifulSoup
 import requests
 import json
@@ -16,9 +15,6 @@ class Parser:
     def __init__(self) -> None:
         with open('sites.json', 'r') as f:
             self.sites = json.loads(f.read())
-        f.close()
-        with open('api.json', 'r') as f:
-            self.api_data = json.loads(f.read())
         f.close()
 
     #  парсинг сайта buh.ru
@@ -105,12 +101,8 @@ class Parser:
         return result
 
 
-
 def main():
-    parser = Parser()
-    a = parser.kba()
-    for i in a:
-        print(i)
+    pass
 
 
 if __name__ == '__main__':

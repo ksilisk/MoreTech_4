@@ -2,6 +2,7 @@ from errors import INVALID_ID, INVALID_DATA
 from flask import Flask, jsonify, request
 from helpers import Helper
 from validate import Validate
+import model
 import logging
 
 logging.basicConfig(filename='app.log', level=logging.INFO)
@@ -13,6 +14,15 @@ logging.info('App created!')
 
 @app.route('/get_news/<int:user_id>', methods=['GET'])
 def get_news(user_id):
+    '''
+    Функция, выдающая новость пользователю
+    Принимает на вход:
+    user_id: int - номер пользователя в системе
+    Пример ответа: [{'title': 'some_title', 'text': 'some_text'}]
+    "title": str - заголовок новости
+    "text": str - текст новости
+    '''
+    logging.info('/get_news handled')
     if v.valid_id(user_id):
         return '', 200
     return jsonify(INVALID_ID), 404
@@ -21,11 +31,12 @@ def get_news(user_id):
 @app.route('/add_user', methods=['POST'])
 def add_user():
     '''
+    Функция, добавляющая нового пользователя в базу
     Принимает на вход данные вида: {"name": "John", "role": "booker"}
-    Параметр "name": строка, передающая имя пользователя
-    Параметр "role": строка, передающая роль пользователя
+    "name": str, - передает имя пользователя
+    "role": str, - передает роль пользователя
     Пример ответа: {"id": 1}
-    Параметр "id": номер пользователя в системе
+    "id": int - номер пользователя в системе
     '''
     logging.info('/add_user handled')
     data = request.get_json()
