@@ -1,12 +1,13 @@
-from errors import INVALID_ID, INVALID_DATA
+from backend.errors import INVALID_ID, INVALID_DATA
 from flask import Flask, jsonify, request
-from helpers import Helper
-from validate import Validate
+from backend.helpers import Helper
+from backend.validate import Validate
 from ML.model import get_trends as trends
 import logging
 
 logging.basicConfig(filename='app.log', level=logging.INFO)
 app = Flask('NewsAPI')
+app.config['JSON_AS_ASCII'] = False
 v = Validate()
 h = Helper()
 logging.info('App created!')
@@ -56,5 +57,4 @@ def get_trends(user_id):
 
 if __name__ == '__main__':
     logging.info('Run app!')
-    app.config['JSON_AS_ASCII'] = False
     app.run()

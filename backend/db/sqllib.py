@@ -1,7 +1,7 @@
 import sqlite3
 import logging
 
-con = sqlite3.connect('db/database.db', check_same_thread=False)
+con = sqlite3.connect('backend/db/database.db', check_same_thread=False)
 cur = con.cursor()
 
 

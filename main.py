@@ -1,6 +1,5 @@
 from backend.app import app
 
-
 def main():
     app.run()
 
