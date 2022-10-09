@@ -31,3 +31,6 @@ def add_news(user_id: int, title: str) -> None:
     cur.execute("INSERT INTO news (user_id, title) VALUES (?, ?)", (user_id, title))
     con.commit()
 
+
+def get_role(user_id: int) -> str:
+    return cur.execute("SELECT role FROM users WHERE id = ?", (user_id,)).fetchone()[0]

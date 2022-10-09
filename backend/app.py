@@ -2,7 +2,7 @@ from errors import INVALID_ID, INVALID_DATA
 from flask import Flask, jsonify, request
 from helpers import Helper
 from validate import Validate
-from ML.model import TrendDetector
+from ML.model import get_trends as trends
 import logging
 
 logging.basicConfig(filename='app.log', level=logging.INFO)
@@ -46,6 +46,15 @@ def add_user():
     return jsonify(INVALID_DATA), 400
 
 
+@app.route('/get_trends/<int:user_id>', methods=['GET'])
+def get_trends(user_id):
+    if v.valid_id(user_id):
+        date = '2022-10-04'
+        return jsonify(h.trends_to_json(user_id, trends(date))), 200
+    return jsonify(INVALID_ID), 404
+
+
 if __name__ == '__main__':
     logging.info('Run app!')
+    app.config['JSON_AS_ASCII'] = False
     app.run()

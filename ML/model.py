@@ -7,6 +7,9 @@ import json
 import datetime
 
 import torch
+from scipy import spatial
+
+from ML.keywords import ACC_KEYWORDS
 from transformers import AutoTokenizer, AutoModel
 from sklearn.cluster import KMeans
 from sklearn.feature_extraction.text import CountVectorizer
@@ -20,6 +23,10 @@ import warnings
 
 warnings.filterwarnings("ignore")
 STOPWORDS = nltk.corpus.stopwords.words("russian")
+
+data_path = "../ML/data/result_acc.json"
+tokenizer = AutoTokenizer.from_pretrained("cointegrated/rubert-tiny")
+model = AutoModel.from_pretrained("cointegrated/rubert-tiny")
 
 
 class DataReader:
@@ -434,11 +441,30 @@ class TrendSummarizer:
     # top_n_words[0][:20]
 
 
-def main() -> None:
+def top_k_news(acc_embed, df, date, trend_mark, n_news=3):
+    top_news = {"data": []}
+    news_pool = pd.DataFrame()
+    trend_clusters = trend_mark[trend_mark["trending"] == 1]["cluster"].index
+    df["cos_dist_acc"] = df["rubert_tiny"].apply(lambda embed: -1 * (spatial.distance.cosine(embed, acc_embed) - 1))
+    for trend_cluster in trend_clusters:
+        news_pool = pd.concat([news_pool, df[df["cluster"] == trend_cluster]])
+
+    for idx in range(n_news):
+        text = news_pool.sort_values(by=["cos_dist_acc"], ascending=False)["train"].iloc[idx]
+        title = text.split(".")[0]
+
+        news = {"title": title, "text": text}
+        top_news["data"].append(news)
+
+    return top_news
+
+
+def get_trends(date: str) -> pd.DataFrame:
     reader = DataReader(data_path=data_path)
     data = reader.data
 
     vectorizer = TextVectorizer(data=data, stopwords=STOPWORDS)
+    temp = vectorizer.embed_bert_cls(' '.join(ACC_KEYWORDS), model, tokenizer)
     vectorizer.fit()
     vect_data = vectorizer.data
 
@@ -447,12 +473,14 @@ def main() -> None:
     clusters = clusterer.clusters
 
     trend_detector = TrendDetector(data=vect_data, clusters=clusters)
-    trends = trend_detector.trend_detection_by_date("2022-10-04")
-    print(trends)
+    trends = trend_detector.trend_detection_by_date(date)
+    return trends
+
+
+def main() -> None:
+    # top_k_news(temp, data, '2022-10-04', trends)
+    pass
 
 
 if __name__ == "__main__":
-    data_path = "./data/result_acc.json"
-    tokenizer = AutoTokenizer.from_pretrained("cointegrated/rubert-tiny")
-    model = AutoModel.from_pretrained("cointegrated/rubert-tiny")
     main()
