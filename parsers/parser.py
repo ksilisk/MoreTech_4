@@ -11,7 +11,26 @@ import time
 
 
 class Parser:
+    '''
+    Класс занимающийся парсингом данных
 
+    buh_ru(self, start: int, count: int) -> list:
+        функция, занимающаяся парсингом данных с сайта buh.ru
+        start: int - начальная позиция парсинга
+        count: int - количество статей для парсинга
+
+    klerk_ru(self, start: int, count: int) -> list:
+        функция, занимающаяся парсингом данных с сайта klerk.ru
+        start: int - начальная позиция парсинга
+        count: int - количество статей для парсинга
+
+    parse_tg(self, name: str) -> list:
+        функция для парсинга различных телеграм-каналов
+        name: str - название канала для парсинга (лежит в sites.json)
+
+    kba(self) -> list:
+        функция для парсинга нестандартного телеграм-канала
+    '''
     def __init__(self) -> None:
         with open('sites.json', 'r') as f:
             self.sites = json.loads(f.read())

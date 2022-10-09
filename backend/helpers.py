@@ -5,7 +5,18 @@ import pandas as pd
 
 
 class Helper:
+    '''
+    Класс проводящий вспомогательные операции с данными
+
+    add_user(self, data: dict) -> dict:
+        добавляет пользователя в базу и возвращает его id
+
+    trends_to_json(self, user_id: int, trends: pd.DataFrame) -> dict:
+        конвертирует тренды в json формат для дальнейшей отправки
+    '''
     def __init__(self) -> None:
+
+        # бухгалтерски тренды
         self.acc_clusters_dict = {
             0: 'Налоговое законодательство',
             1: 'Налоги и отчетность',
@@ -18,6 +29,8 @@ class Helper:
             8: 'Макроэкономика',
             9: 'OTHER'
         }
+
+        # тренды генерального директора
         self.ceo_clusters_dict = {
             0: 'Финансы',
             1: 'Digital',

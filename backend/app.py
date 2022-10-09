@@ -7,7 +7,7 @@ import logging
 
 logging.basicConfig(filename='app.log', level=logging.INFO)
 app = Flask('NewsAPI')
-app.config['JSON_AS_ASCII'] = False
+app.config['JSON_AS_ASCII'] = False  # работа с символами кириллицы
 v = Validate()
 h = Helper()
 logging.info('App created!')
@@ -49,6 +49,14 @@ def add_user():
 
 @app.route('/get_trends/<int:user_id>', methods=['GET'])
 def get_trends(user_id):
+    '''
+    Функция, выдающая список трендов
+    Принимает на вход:
+    user_id: int - номер пользователя в системе
+    Пример ответа: {"trends":["Финансы","Трудовое законодательство"]}
+    "trends": list - список трендов
+    '''
+    logging.info('/get_trends handled')
     if v.valid_id(user_id):
         date = '2022-10-04'
         return jsonify(h.trends_to_json(user_id, trends(date))), 200
