@@ -5,7 +5,6 @@ from backend.validate import Validate
 from ML.model import get_trends as trends
 import logging
 
-
 logging.basicConfig(filename='app.log', level=logging.INFO)
 app = Flask('NewsAPI')
 app.config['JSON_AS_ASCII'] = False  # работа с символами кириллицы
@@ -61,6 +60,20 @@ def get_trends(user_id, date):
     if v.valid_id(user_id) and v.valid_date(date):
         return jsonify(h.trends_to_json(user_id, trends(date))), 200
     return jsonify(INVALID_DATA), 400
+
+
+@app.route('/get_insight/<int:user_id>', methods=['GET'])
+def get_insight(user_id):
+    '''
+    Функция, выдающая инсайт
+    Принимает на вход:
+    user_id: int - номер пользователя в системе
+    Пример ответа: {"insight": "some insight"}
+    "insight": str - инсайт
+    '''
+    if v.valid_id(user_id):
+        return jsonify(h.insight(user_id)), 200
+    return jsonify(INVALID_ID), 400
 
 
 if __name__ == '__main__':

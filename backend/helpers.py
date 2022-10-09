@@ -17,6 +17,7 @@ class Helper:
     trends_to_json(self, user_id: int, trends: pd.DataFrame) -> dict:
         конвертирует тренды в json формат для дальнейшей отправки
     '''
+
     def __init__(self) -> None:
 
         # бухгалтерски тренды
@@ -76,3 +77,15 @@ class Helper:
             df['date'] = pd.to_datetime(pd.to_datetime(df['date']).dt.date)
             df['rubert_tiny'] = np.split(emb_array, len(emb_array), axis=0)
         return top_k_news(embed_keywords, df, date, trend_mark)
+
+    def insight(self, user_id: int) -> dict:
+        role = sql.get_role(user_id)
+        result = {}
+        if role == 'booker':
+            result = {
+                "insight": "Новые изменения в налоговое законодательство и льготы могут открыть возможность для увеличения эффективности компаний сферы научных исследований и нефтедобычи за счет снижение уровня налогообложения. "
+                           "Руководителям бухгалтерских отделов следует внимательно ознакомиться с дайджестом новостей от 2022-10-03"}
+        elif role == 'ceo':
+            result = {
+                "insight": "Сегодня цифровые компании являются самыми быстрорастущими на рынке – это повод задуматься о цифровизации собственного бизнеса. Советуем руководителям компаний обратить внимание на дайджест новостей для от 2022-10-03"}
+        return result
