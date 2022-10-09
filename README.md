@@ -3,8 +3,8 @@
 * [ML](#ml)
 * [Back-end](#backend)
   * [1. POST /add_user](#add_user)
-  * [2. GET /get_news/$id](#get_news)
-  * [3. GET /get_trends/$id](#get_trends)
+  * [2. GET /get_news/$id/$date](#get_news)
+  * [3. GET /get_trends/$id/$date](#get_trends)
 * [Парсинг](#pars)
 * [Инструкции](#instruction)
   * [Запуск веб-приложения](#start_app)
@@ -62,17 +62,17 @@ tSNE - Гендиры:
 
 При невалидных данных возвращает `400`: `{"code": 400,"message": "Validation Failed"}`
 
-### <a name="get_news"></a> 2. GET /get_news/$id
-Принимает на вход `id` пользователя и возвращает новости в формате `json`.
+### <a name="get_news"></a> 2. GET /get_news/$id/$date
+Принимает на вход `id` пользователя и дату и возвращает новости в формате `json`.
 
 Отвечает за получение новостей пользователями.
 
-Пример ответа: `{"title": "Заголовок", "text": "Текст"}`
+Пример ответа: `{"data": [{"title": "Заголовок", "text": "Текст"}]}`
 
 При невалидном `id` возвращает: `{"code": 404,"message": "User not found"}`
 
-### <a name="get_trends"></a> 3. GET /get_trends/$id
-Принимает на вход `id` пользователя и возвращает тренды в формате `json`.
+### <a name="get_trends"></a> 3. GET /get_trends/$id/$date
+Принимает на вход `id` пользователя и дату и возвращает тренды в формате `json`.
 
 Отвечает за получение трендов пользователями.
 
